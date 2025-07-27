@@ -3,10 +3,14 @@ import imutils
 import numpy as np
 import argparse
 
+# this function will observe the video in frames and detect any objects (human) and make a box around the person
+# it takes a frame and detects a person in it and then returns the frame with the person in a green box
 def detect(frame):
+    # the detectMultiScale() method returns the coordinates of the box and the confidence value of a person (2-tuple)
     bounding_box_cordinates, weights =  HOGCV.detectMultiScale(frame, winStride = (4, 4), padding = (8, 8), scale = 1.03)
     
     person = 1
+    # creating the green box
     for x,y,w,h in bounding_box_cordinates:
         cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 2)
         cv2.putText(frame, f'person {person}', (x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
@@ -18,6 +22,7 @@ def detect(frame):
 
     return frame
 
+# this function takes a path of a video and reads it frame by frame for object detection
 def detectByPathVideo(path, writer):
 
     video = cv2.VideoCapture(path)
@@ -28,11 +33,12 @@ def detectByPathVideo(path, writer):
 
     print('Detecting people...')
     while video.isOpened():
-        #check is True if reading was successful 
+        # check if each frame is read successfully, if not then the loop will end
         check, frame =  video.read()
 
         if check:
-            frame = imutils.resize(frame , width=min(800,frame.shape[1]))
+            frame = imutils.resize(frame , width=min(800,frame.shape[1]))   # using imutils to resize each
+                                                                            # frame for better computer vision
             frame = detect(frame)
             
             if writer is not None:
@@ -47,13 +53,14 @@ def detectByPathVideo(path, writer):
     cv2.destroyAllWindows()
 
 def detectByCamera(writer):   
-    video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(0) # passing 0 in the function means we want to record from webcam
     print('Detecting people...')
 
     while True:
-        check, frame = video.read()
+        check, frame = video.read() # this method reads the video frame by frame
 
-        frame = detect(frame)
+        frame = detect(frame)   # sending each frame to the detect function, where it will be processed
+                                # for object detection 
         if writer is not None:
             writer.write(frame)
 
@@ -76,6 +83,9 @@ def detectByPathImage(path, output_path):
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+# this function can take web cameras, videos, and images to detect humans
+# if a path is given it will open the video or image in the given path. if not, it will open the web cam
 def humanDetector(args):
     image_path = args["image"]
     video_path = args['video']
@@ -107,9 +117,10 @@ def argsParser():
     return args
 
 if __name__ == "__main__":
-    HOGCV = cv2.HOGDescriptor()
+    # HOGCV is responsible for computer vision and image processing for object detection
+    # it is provided by OpenCV, so we can then use this algorithm for object detection
+    HOGCV = cv2.HOGDescriptor() # object detection
     HOGCV.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
     args = argsParser()
     humanDetector(args)
-
