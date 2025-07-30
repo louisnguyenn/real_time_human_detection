@@ -2,6 +2,8 @@
 
 A project using Python, OpenCV, and HOG (Histogram of Oriented Gradients) to detect and count humans in real-time from a webcam, video file, or image. This project demonstrates how to build a human detection and counting system using the HOG descriptor with a pre-trained SVM model provided by OpenCV. It processes image frames to identify people, draws bounding boxes, and displays the total count in real time.
 
+<img src="output1.png" alt="example image">
+
 ---
 
 ## 🎯 Features
