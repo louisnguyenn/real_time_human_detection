@@ -71,6 +71,7 @@ def detectByCamera(writer):
     video.release()
     cv2.destroyAllWindows()
 
+# used when a person needs to be detected from an image
 def detectByPathImage(path, output_path):
     image = cv2.imread(path)
 
